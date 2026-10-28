@@ -1,5 +1,5 @@
 import { createContext, useState, useContext } from 'react';
-import apiClient from '../utils/apiClient';
+import { apiClient, apiClientImageUpload } from '../utils/apiClient';
 
 const AuthContext = createContext(null);
 
@@ -9,7 +9,7 @@ export function AuthProvider({ children }) {
 
     const handleRegister = async (formData) => {
         try {
-            const res = await apiClient.post("/auth/register", formData);
+            const res = await apiClientImageUpload.post("/auth/register", formData);
             setUser(res.data.user)
             return res.data;
         } catch (error) {

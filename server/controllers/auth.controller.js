@@ -1,6 +1,8 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import uploadImage from "../config/imagekit.js"
+import fs from "fs/promises";
 
 const generateToken = (userId) => {
     return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "1h" });
@@ -10,9 +12,13 @@ const registerUser = async (req, res) => {
 
     try {
         const { username, email, password } = req.body;
+        const profilePicture = req.file;
 
         if (!username || !email || !password) {
             return res.status(400).json({ message: "All fields are required" });
+        }
+        if (!profilePicture) {
+            return res.status(400).json({ message: "Profile picture is required" });
         }
 
         const userExists = await User.findOne({ email });
@@ -20,13 +26,18 @@ const registerUser = async (req, res) => {
             return res.status(400).json({ message: "User already exists" });
         }
 
-        let hasedPassword = bcrypt.hashSync(password, 10);
+        const uploadedProfilePictrue = await uploadImage(profilePicture.path, profilePicture.originalname)
+
+        let hasedPassword = bcrypt.hashSync(password, 10)
 
         const user = await User.create({
             username,
             email,
-            password: hasedPassword
+            password: hasedPassword,
+            profilePicture: uploadedProfilePictrue.url
         });
+
+        await fs.unlink(req.file.path)
 
         let token = generateToken(user._id);
 

@@ -8,17 +8,26 @@ const Register = () => {
     const [formData, setFormData] = useState({
         username: "",
         email: "",
-        password: ""
+        password: "",
+        profilePicture: null
     });
 
-    const onChangeHandler = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value })
+    const handleChange = (e) => {
+
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+
     }
+
+    const handleImageChange = (e) => {
+
+        setFormData({ ...formData, profilePicture: e.target.files[0] });
+    }
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         await handleRegister(formData);
-        setFormData({ username: "", email: "", password: "" });
+        setFormData({ username: "", email: "", password: "", profilePicture: null });
         navigate("/");
     }
 
@@ -27,24 +36,48 @@ const Register = () => {
             <form onSubmit={handleSubmit}>
                 <label>
                     Username
-                    <input className='border border-gray-300 rounded-md px-4 py-2' name='username' type="text" required placeholder="Username"
-                        value={formData.username} onChange={onChangeHandler} />
+                    <input className='border border-gray-300 rounded-md px-4 py-2'
+                        name='username'
+                        type="text"
+                        placeholder="Username"
+                        value={formData.username}
+                        onChange={handleChange}
+                        required />
                 </label>
                 <br />
 
                 <label>
                     Email
-                    <input className='border border-gray-300 rounded-md px-4 py-2' name='email' type="email" required placeholder="Email"
-                        value={formData.email} onChange={onChangeHandler} />
+                    <input className='border border-gray-300 rounded-md px-4 py-2'
+                        name='email'
+                        type="email"
+                        placeholder="Email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required />
                 </label>
                 <br />
 
                 <label>
                     Password
-                    <input className='border border-gray-300 rounded-md px-4 py-2' name='password' type="password" required placeholder="Password"
-                        value={formData.password} onChange={onChangeHandler} />
+                    <input className='border border-gray-300 rounded-md px-4 py-2'
+                        name='password'
+                        type="password"
+                        placeholder="Password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required />
                 </label>
                 <br />
+
+                <label>
+                    Profile Picture
+                    <input className='border border-gray-300 rounded-md px-4 py-2'
+                        name='profilePicture'
+                        type="file"
+                        onChange={handleImageChange}
+                        required />
+                </label>
 
                 <button className='bg-blue-500 text-white rounded-md px-4 py-2' type="submit">Register</button>
             </form>
